@@ -3,14 +3,18 @@
  * @since : 11/26/20
  **/
 
+
 import manageCustomers from './manage-customers.component.html';
 import style from './manage-customers.component.scss';
 import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { getAllCustomers } from '../service/customer.service';
+import { getAllCustomers, saveCustomer } from '../service/customer.service';
 import { Customer } from '../model/customer';
+
+let dataTable:any=null;
+
 
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
@@ -30,12 +34,17 @@ function old_loadAllCustomers():void{
             <td><i class="fas fa-trash"></i></td>
         </tr>
         `);}
-        ($("#tbl-customers") as any).DataTable({
+
+      
+       
+       dataTable = ($("#tbl-customers") as any).DataTable({
             "info": false,
             "searching": false,
             "lengthChange": false,
             "pageLength": 5,
         });
+
+
     }).catch(function(){})
 }
 
@@ -43,6 +52,12 @@ function old_loadAllCustomers():void{
 async function loadAllCustomers(){
 
     let customers= await getAllCustomers();
+
+    if(dataTable){
+        ($("#tbl-customers") as any).DataTable().destroy();
+        $("#tbl-customers tbody tr").remove();
+        
+    }
  
     
      for(const customer of customers){
@@ -53,12 +68,16 @@ async function loadAllCustomers(){
              <td>${customer.address}</td>
              <td><i class="fas fa-trash"></i></td>
          </tr>
-         `);}
-         ($("#tbl-customers") as any).DataTable({
+         `);
+        }
+     
+        
+         dataTable=($("#tbl-customers") as any).DataTable({
              "info": false,
              "searching": false,
              "lengthChange": false,
              "pageLength": 5,
+             "ordering":false
          });
      
  }
@@ -66,6 +85,23 @@ async function loadAllCustomers(){
 loadAllCustomers();
 
 
+$('#btn-save').click(async()=>{
+
+    let id=<string> $('#txt-id').val();
+    let name=<string> $("#txt-name").val();
+    let address=<string> $('#txt-address').val();
+
+   let success= await saveCustomer(new Customer(id,name,address)); 
+   console.log(success) ;
+
+   if(success){
+        alert("Saved");
+        loadAllCustomers();
+   }else{
+        alert("failed to success");
+   }
+
+})
 
 
 

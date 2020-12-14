@@ -9,7 +9,10 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { getAllItems } from '../service/item.service';
+import { getAllItems, saveItem } from '../service/item.service';
+import { Item } from '../model/items';
+
+let dataTable:any=null;
 
 $("app-manage-items").replaceWith('<div id="manage-items">' + manageItems + '</div>');
 var html = '<style>' + style + '</style>';
@@ -41,6 +44,27 @@ async function loadAllItems(){
     }
 
     loadAllItems();
+
+
+    $('#btn-save').click(async()=>{
+
+        let code=<string> $('#txt-code').val();
+        let description=<string> $("#txt-description").val();
+        let unitPrice=<string> $('#txt-unitprice').val();
+        let qtyOnHand=<string> $('#txt-qty').val();
+    
+       let success= await saveItem(new Item(code,description,parseFloat(unitPrice),parseFloat(qtyOnHand))); 
+       console.log(success) ;
+    
+       if(success){
+            alert("Saved");
+            loadAllItems();
+       }else{
+            alert("failed to success");
+       }
+    
+    })
+    
 
 
 
