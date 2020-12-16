@@ -63,17 +63,21 @@ http.send();
 });
 }
 
-export function saveCustomer(customer:Customer):Promise<boolean>{
+export function saveCustomer(customer:Customer):Promise<void>{
 return new Promise((resolve,reject)=>{
     let http = new XMLHttpRequest();
 
     http.onreadystatechange=()=>{
         if(http.readyState==4){
-            let success=JSON.parse(http.responseText);
-            if(success){
-                customers.unshift(customer);
+            //let success=JSON.parse(http.responseText);
+            if(http.status==201){
+                customers.push(customer);
+                resolve ();
+            }else{
+                reject("someyhing went wrong");
+
             }
-        resolve (success);
+       
     
     }
     };
@@ -87,3 +91,34 @@ return new Promise((resolve,reject)=>{
      
 });
 } 
+
+
+export function deleteCustomer(id:string): Promise<void>{
+    console.log("id",id);
+    
+    return new Promise((resolve,reject)=>{
+        let http = new XMLHttpRequest();
+        
+        http.onreadystatechange=()=>{
+            if(http.readyState==4){
+                //let success=JSON.parse(http.responseText);
+                if(http.status==204){
+                    customers.splice(customers.findIndex((elm)=>elm.id=id),1);
+                    resolve ();
+                }else{
+                    reject("someyhing went wrong");
+    
+                }
+           
+        
+        }
+        };
+    
+        http.open("DELETE",`http://localhost:8080/Module3/customers?id=${id}`,true);
+    
+        http.send();
+    
+         
+    });
+}
+

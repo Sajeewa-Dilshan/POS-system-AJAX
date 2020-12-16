@@ -101,3 +101,64 @@ export function deleteItem(code:string): Promise<void>{
          
     });
 }
+
+let customersForOrd:Customer[]=[];
+
+export function getCusForOrders():Promise <Array<Customer>>{
+    return new Promise((resolve,reject)=>{
+ 
+    
+       
+    
+        // 1 AJAX
+        let http=new XMLHttpRequest();
+    //2
+    http.onreadystatechange=function(){
+        if(http.readyState==4){
+        console.log(http.readyState);
+        console.log("recieved it");
+        console.log(http.responseText);
+        console.log(http.responseXML);
+        customersForOrd=JSON.parse(http.responseText);
+       // let dom=$(http.responseText);
+       // let dom=$(http.responseXML as any);
+        //let dom=$("<root>${http.responseText}</root>");
+        //console.log($(http.responseText).find('table'));
+    /* 
+    $(dom).find("customers customer").each((index,element)=>{
+    
+    let id= $(element).find("id").text();
+    let name= $(element).find("name").text();
+    let address= $(element).find("address").text();
+    
+    customers.push(new Customer(id,name,address));
+    
+    
+    }); */
+    resolve(customersForOrd);
+        }console.log("customer array",customersForOrd);
+      
+    }
+     
+    // 3 
+    http.open('GET','http://localhost:8080/Module3/customers',true);
+    
+    //4 if we have to set headers
+    
+    http.setRequestHeader("Content-Type","application/json");
+    
+    //5
+    
+    http.send();
+    
+    //     for (let i=0;i<50;i++){
+    //     customers.push( new Customer(`C${i}`,"Kasun","Apura"));
+    // }
+     //return customers;
+   
+   
+    });
+    }
+
+    
+    

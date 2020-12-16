@@ -10,7 +10,7 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { getAllCustomers, saveCustomer } from '../service/customer.service';
+import { deleteCustomer, getAllCustomers, saveCustomer } from '../service/customer.service';
 import { Customer } from '../model/customer';
 
 let dataTable:any=null;
@@ -19,6 +19,17 @@ let dataTable:any=null;
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
 $("#dashboard").append(html);
+
+$("#tbl-customers tbody").on('click','tr .fas',async (event:Event)=>{
+    let id = ($(event.target as any).parents("tr").find("td:first-child").text());
+    try{
+        await deleteCustomer(id);
+    alert("Customer has been deleted");
+    loadAllCustomers();
+}catch{
+      alert("Failed to delete");
+  }
+});
 
 function old_loadAllCustomers():void{
 
@@ -79,6 +90,7 @@ async function loadAllCustomers(){
              "pageLength": 5,
              "ordering":false
          });
+         dataTable.page(Math.ceil(customers.length/5)-1).draw(false);
      
  }
  
@@ -91,17 +103,23 @@ $('#btn-save').click(async()=>{
     let name=<string> $("#txt-name").val();
     let address=<string> $('#txt-address').val();
 
-   let success= await saveCustomer(new Customer(id,name,address)); 
-   console.log(success) ;
+    if(id.match(/^C\d{3}$/ || name.trim().length==0 || address.trim().length==0)){
+        alert("Invalid customer inputs");
+        return;
+    }
 
-   if(success){
-        alert("Saved");
+    try{
+    await saveCustomer(new Customer(id,name,address)); 
+   
+        alert("Saved customer");
         loadAllCustomers();
-   }else{
-        alert("failed to success");
-   }
+   }catch(error){
+        alert("failed to save customer");
+        console.log(error);
 
-})
+    }
+
+});
 
 
 
