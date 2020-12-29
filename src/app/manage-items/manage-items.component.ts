@@ -11,6 +11,7 @@ import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTab
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
 import { getAllItems, saveItem, deleteItem } from '../service/item.service';
 import { Item } from '../model/items';
+import { getAllItem2 } from '../service/item.Service2';
 
 let dataTable2:any=null;
 
@@ -31,9 +32,13 @@ $("#tbl-items tbody").on('click','tr .fas',async (event:Event)=>{
 });
 
 
+
 async function loadAllItems(){
 
-    let items=await getAllItems();
+  //  let items=await getAllItems();
+
+  let items= await getAllItem2();
+  
 
     if(dataTable2){
         ($("#tbl-items") as any).DataTable().destroy();
@@ -43,6 +48,7 @@ async function loadAllItems(){
 
 
     for (const item of items){
+        
         $("#tbl-items tbody").append(`
         <tr>
         <td>${item.code}</td>
@@ -61,7 +67,7 @@ async function loadAllItems(){
             "ordering":false
         });
         dataTable2.page(Math.ceil(items.length/5)-1).draw('page');
-
+    
     }
 
     loadAllItems();
@@ -75,7 +81,7 @@ async function loadAllItems(){
         let unitPrice=<string> $('#txt-unitprice').val();
         let qtyOnHand=<string> $('#txt-qty').val();
     
-        if(code.match(/^I\d{3}$/ || description.trim().length==0 || unitPrice.trim().length==0)||qtyOnHand.trim().length==0){
+        if(!code.match(/^I\d{3}$/)|| description.trim().length==0 || unitPrice.trim().length==0||qtyOnHand.trim().length==0){
             alert("Invalid item inputs");
             return;
         }

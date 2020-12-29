@@ -6,9 +6,12 @@
 import { resolve } from "../../../webpack.config";
 import { Customer } from "../model/customer";
 import { Item } from "../model/items";
+import { OrdredItems } from "../model/orderedItems";
 
 let items:Item[]=[];
 let loaded = false;
+let itemDetails:Item;
+let clas:OrdredItems;
 
 let customersForOrd:Customer[]=[];
 
@@ -99,5 +102,58 @@ export function getCusForOrders():Promise <Array<Customer>>{
  
 }
 
+export function getItemDetails(id:string,code:string,orderedQty:string): Promise<Item>{
+    return new Promise((resolve,reject)=>{
+
+        console.log("parsed code ", code );
+    
+        let http=new XMLHttpRequest;
+    
+        http.onreadystatechange=function(){
+            if(http.readyState==4){
+               let dom= (http.responseText)
+             itemDetails=(JSON.parse(dom));
+               
+               resolve(itemDetails);
+               console.log(http.responseText);
+            }
+        }
+    
+        http.open('GET',`http://localhost:8080/Module3/placeorders?id=${id}&code=${code}&qty=${orderedQty}`,true);
+       
+        http.setRequestHeader("Content-Type","application/json");
+
+        http.send();
+    
+    });
+    
+    }
+
 
     
+ export   function sendOrderedItems():Promise<void>{
+        return new Promise((resolve,reject)=>{
+            alert("sfgdfgdf  ");
+            let http =new XMLHttpRequest;
+
+            http.onreadystatechange=function(){
+                if(http.readyState==4){
+                   
+                     clas =new OrdredItems(["I002","I005","I006"],["1","2","3"]);
+                      console.log("strgify",JSON.stringify(clas));
+                      resolve();
+                      
+                }
+            }
+
+            http.open('POST','http://localhost:8080/Module3/placeorders',true);
+
+            http.setRequestHeader('Content-Type','application/json');
+
+            //http.send(JSON.stringify(clas))
+            http.send(JSON.stringify(clas))
+
+        });
+
+
+    }

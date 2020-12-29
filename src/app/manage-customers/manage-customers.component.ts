@@ -31,6 +31,21 @@ $("#tbl-customers tbody").on('click','tr .fas',async (event:Event)=>{
   }
 });
 
+
+
+    $("#tbl-customers tbody").on('click',function(){
+       
+           if( $(this).children().children().find('i').attr('class')?.includes("fas")){
+               alert("Found it");
+           }
+
+    });
+
+
+
+
+
+
 function old_loadAllCustomers():void{
 
    getAllCustomers().then(function(customers:Array<Customer>){
@@ -103,8 +118,10 @@ $('#btn-save').click(async()=>{
     let name=<string> $("#txt-name").val();
     let address=<string> $('#txt-address').val();
 
-    if(id.match(/^C\d{3}$/ || name.trim().length==0 || address.trim().length==0)){
+    if(!id.match(/^C\d{3}$/) || name.trim().length==0 || address.trim().length==0){
         alert("Invalid customer inputs");
+        alert();
+
         return;
     }
 
