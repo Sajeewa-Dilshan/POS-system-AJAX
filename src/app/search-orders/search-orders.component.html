@@ -36,21 +36,26 @@
                   
                   <div class="form-group">
                     <label for="txt-description">Please type the order Id</label>
-                    <input type="text" class="form-control" id="txt-cusId" placeholder="Enter the order Id">
+                    <input type="text" class="form-control" id="txt-orderId" placeholder="Enter the order Id">
                   </div>
                   <div class="form-group">
                     <label for="txt-description">Customer Id</label>
-                    <input disabled="disabled" type="text" class="form-control" id="txt-itemCode" placeholder="Customer Id will be showed here">
+                    <input disabled="disabled" type="text" class="form-control" id="txt-cusId-so" placeholder="Customer Id will be showed here">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="txt-description">Date</label>
+                    <input disabled="disabled" type="text" class="form-control" id="txt-date" placeholder="Date will be showed here">
                   </div>
 
                    
                     <div class="form-group">
                       <label for="txt-totalPrice">Total Price</label>
-                      <input disabled="disabled" type="text" class="form-control" id="txt-totalPrice" placeholder="Total Price will be showed here">
+                      <input disabled="disabled" type="text" class="form-control" id="txt-totalPrice-so" placeholder="Total Price will be showed here">
                     </div>                     
                     <div class="form-group">
                       <button type="submit" style="margin-top: 8px;" id="btn-search-order" class="btn btn-primary" >Search Order</button>
-                      <button type="reset" style="margin-top: 8px;" class="btn btn-danger">Delete Order</button>
+                      <button type="reset" style="margin-top: 8px;" id="btn-delete-order" class="btn btn-danger">Delete Order</button>
                      
                     </div>
                   </div>
@@ -70,7 +75,7 @@
                       <th>Ordered Qty</th>
                       <th>Unitprice</th>
                       <th>Sum</th>
-                      <th></th>
+                     
                     </tr>
                     </thead>
                     <!-- <tbody>

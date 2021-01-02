@@ -6,5 +6,5 @@
 
 
 export class Order{
-    constructor(public code:string,public description: string,public unitPrice :number,public qtyOnHand:number ){}
+    constructor(public cusId:string,public itemCode:Array<String> ,public des:String,public qty:Array<number>,public unitPrice:Array<number>,public totalPrice:number, public date:String){}
 }

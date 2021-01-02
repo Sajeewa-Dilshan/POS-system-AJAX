@@ -9,11 +9,8 @@ import 'admin-lte/plugins/datatables/jquery.dataTables.min';
 import 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min';
 import 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min';
 import 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min';
-import { getAllItems, saveItem, deleteItem } from '../service/item.service';
 import { Item } from '../model/items';
-import { getAllCustomers } from '../service/customer.service';
-import { getCusForOrders, getItemDetails, getItemForOrders, sendOrderedItems } from '../service/place.order.service';
-import { LoaderOptionsPlugin } from 'webpack';
+import { deleteOrder, getOrderDetails } from '../service/search.order.service';
 
 let dataTable3:any=null;
 let items: Array<Item>=[];
@@ -30,124 +27,99 @@ $("#dashboard").append(html);
 
 }); 
 
-async function loadAllCustomers(){
-   
-    let customers= await getCusForOrders();
- for(const customer of customers){
-        console.log(customer.address);
-        $('#customer-select').append(`<option value=${customer.id}  >${customer.id} </option>`);
-         }
-     }
-
- loadAllCustomers();
-
- async function loadAllItems(){
-   
-    let items= await getItemForOrders();
- for(const item of items){
-        console.log(item.code);
-        $('#item-select').append(`<option value=${item.code}  >${item.code} </option>`);
-         }
-     }
-
-     loadAllItems();
-
-/*  $("#btn-save-order").on('click',async (event:Event)=>{
-    let code = ($(event.target as any).text());
-    alert(code);
-    try{
-     
-}catch{
-      alert("Failed to delete");
-  }
-});  
- */
-    //  <td>${customer.name}</td>
-            //  <td>${customer.address}</td>
-            //  <td><i class="fas fa-trash"></i></td>
-
-/* $('#item-select').on('change',function(){    
-  let x=$(this).val;         
-        alert(x);   
-    }  );
- */
-
-/* $(function(){
-    $("#item-select").change(function(){
-        var dis=$("#item-select options:selected").text();
-        alert(dis);
-    })
-}) */
 
 
-$("#btn-add-to-cart").on('click',function(){
 
-    $("#txt-description-po").val("");
-    $("#txt-unitprice-po").val("");
-    $("#txt-totalPrice").val("");
+$("#btn-search-order").on('click',function(){
+
+    $("#txt-cusId-so").val("");
+    $("#txt-date").val("");
+    $("#txt-totalPrice-so").val("");
      
 
   
-    let code=<string>$('#txt-itemCode').val();
-    let orderedQty=<string>$('#txt-ordQty').val();
-    let conNum= parseInt(orderedQty);
+    let ordId=<string>$('#txt-orderId').val();
+    
  
  
-    if(!code.match(/^I\d{3}$/) ||  !(conNum>0)){
+    if(!ordId.match(/^OD\d{3}$/) ){
         alert("Invalid item inputs");
         return;
     }
 
     console.log("ordered qty");
-    loadItemDetails(code as any,orderedQty as any );
+    loadOrderDetails(ordId)
+    
   
 });
 
- async function loadItemDetails(code:string,orderedQty:string){
-    
-     let itemDetails:any=await getItemDetails(code,orderedQty);
+
+ async function loadOrderDetails(ordId:string){
+
+    if(dataTable3){
+         ($("#tbl-search-orders") as any).DataTable().destroy();
+        $("#tbl-search-orders tbody tr").remove();
+        
+     }
+
+   
+
+
+     let itemDetails:any=await getOrderDetails(ordId);
      console.log(itemDetails);
 
-     if(itemDetails=="Enter a Valid Item Code"){
-         alert("Enter a Valid Item Code");
+     if(itemDetails=="Enter a valid order Id"){
+         alert("Enter a valid order Id");
          return
-
-     }else if(itemDetails=="Enter a Valid Item Qty"){
-        alert("Enter a Valid Item Qty");
-        return
 
      }
 
-    let description:any=itemDetails.description;
+    let cusId:any=itemDetails.cusId;
+     let itemCode:any=itemDetails.itemCode;
+     let des:any=itemDetails.des
+     let qty:any=itemDetails.qty;
      let unitPrice:any=itemDetails.unitPrice;
-    let itemTotal =parseFloat(unitPrice)*parseInt(orderedQty);
+     let totalPrice:any=itemDetails.totalPrice;
+     let date:any=itemDetails.date;
    
     let totalBill: any=0;
 
-    console.log(description,unitPrice);
+    console.log(unitPrice);
 
   
-    $("#txt-description-po").val(description);
-     $("#txt-unitprice-po").val(unitPrice);
+    $("#txt-cusId-so").val(cusId);
+     $("#txt-date").val(date);
+     $("#txt-totalPrice-so").val(totalPrice);
+
+     for (let i =0; i<itemCode.length;i++){
+
+        $('#tbl-search-orders tbody').append(`<tr>
+        <td>${itemCode[i]}</td>
+        <td>${des[i]}</td>
+        <td>${qty[i]}</td>
+        <td>${unitPrice[i]}</td>
+       
+        <td>${unitPrice[i]*qty[i]}</i></td>
+        
+        </tr>`);
+     }
+    
     
 
-     $('#tbl-place-orders tbody').append(`<tr>
-     <td>${code}</td>
-     <td>${description}</td>
-     <td>${orderedQty}</td>
-     <td>${unitPrice}</td>
-     <td>${itemTotal}</td>
-     <td><i class="fas fa-trash"></i></td>
-     
-     </tr>`);
-
-     dataTable3=($("#tbl-place-orders") as any).DataTable({
+     dataTable3=($("#tbl-search-orders") as any).DataTable({
         "info": false,
         "searching": false,
         "lengthChange": false,
         "pageLength": 5,
-        "ordering":false
+        "ordering":false,
+        "retrieve": true,
+    "paging": false
     });
+
+   
+
+    
+
     console.log("length", $('#tbl-place-orders tbody').children().length); 
 
     for(let i=0; i< $('#tbl-place-orders tbody').children().length;i++ ){
@@ -161,29 +133,21 @@ $("#btn-add-to-cart").on('click',function(){
 
 
 
-$('#btn-save-order').on('click',async()=>{
-    let itemsForSend:any=[];
-    let qtyForSend:any=[];
-    let totalForSend:any=0;
-    let cusId=<string>$('#txt-cusId').val();
-
-    if(!cusId.match(/^C\d{3}$/)){
-        alert("please enter valid customer id")
+$('#btn-delete-order').on('click',async()=>{
+    let ordId=<string>$('#txt-orderId').val();
+    
+ 
+ 
+    if(!ordId.match(/^OD\d{3}$/) ){
+        alert("Invalid item inputs");
+        return;
     }
 
-    for(let i=0; i< $('#tbl-place-orders tbody').children().length;i++ ){
-        // total += Number.parseFloat($($($('tbody').find('tr')[i]).children()[4]).text());
-        itemsForSend.push($($($('#tbl-place-orders tbody').find('tr')[i]).children()[0]).text());
-        qtyForSend.push($($($('#tbl-place-orders tbody').find('tr')[i]).children()[2]).text());
-        totalForSend=totalForSend+parseFloat($($($('#tbl-place-orders tbody').find('tr')[i]).children()[4]).text());
-         }
 
-         console.log(itemsForSend,qtyForSend,totalForSend);
-
-   let ans= await sendOrderedItems(cusId,itemsForSend,qtyForSend,totalForSend);
-    if(ans=="Enter valid customer id"){
-        alert("Enter valid customer id")
-    }else if("Saved Order"){
-        alert("Saved Order")
+   let ans:any= await deleteOrder(ordId);
+    if(ans=="deleted"){
+        alert("deleted");
+    }else if("unsuccess"){
+        alert("please enter valid order id");
     }
 })
