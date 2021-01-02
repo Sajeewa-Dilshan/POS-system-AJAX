@@ -33,56 +33,24 @@
                 <form role="form">
                   
                   <div class="card-body">
-                    <div class="form-group">
-                      <label for="txt-id">Select Customer</label>
-                      <select style="display: flex;" name="customer" id="customer-select">
-                        <option value="">--Please choose a customer--</option>
-                       </select>
+                  
+                  <div class="form-group">
+                    <label for="txt-description">Please type the order Id</label>
+                    <input type="text" class="form-control" id="txt-cusId" placeholder="Enter the order Id">
                   </div>
                   <div class="form-group">
-                    <label for="txt-description">Please type Customer Id</label>
-                    <input type="text" class="form-control" id="txt-cusId" placeholder="Enter the customer ID">
-                  </div>
-                  <div class="form-group">
-                    <label for="txt-description">Item Code</label>
-                    <input type="text" class="form-control" id="txt-itemCode" placeholder="Enter t5he item code">
+                    <label for="txt-description">Customer Id</label>
+                    <input disabled="disabled" type="text" class="form-control" id="txt-itemCode" placeholder="Customer Id will be showed here">
                   </div>
 
-                  <!-- <div class="form-group">
-                    <label for="txt-code">Item Code</label>
-                    <input  type="text" class="form-control" id="txt-code" placeholder="Enter t5he item code">
-                  </div> -->
-                  <div class="form-group">
-                    <label for="txt-code">Select Item</label>
-                    <select style="display: flex;" name="item" id="item-select">
-                      <option value="">--Please choose items--</option>
-                     
-                  </select>
-                  </div>
-
-
-                    
-
-                    <div class="form-group">
-                      <label for="txt-description">Item Description</label>
-                      <input disabled="disabled" type="text" class="form-control" id="txt-description-po" placeholder="Enter the item description">
-                    </div>
-                    <div class="form-group">
-                      <label for="txt-qty">Ordered Qty</label>
-                      <input type="text" class="form-control" id="txt-ordQty" placeholder="Enter the qty that you want to order">
-                    </div>
-                    <div class="form-group">
-                      <label for="txt-unitprice">Unit Price</label>
-                      <input disabled="disabled" type="text" class="form-control" id="txt-unitprice-po" placeholder="Enter the unitprice">
-                    </div>  
+                   
                     <div class="form-group">
                       <label for="txt-totalPrice">Total Price</label>
-                      <input disabled="disabled" type="text" class="form-control" id="txt-totalPrice" placeholder="Enter the unitprice">
+                      <input disabled="disabled" type="text" class="form-control" id="txt-totalPrice" placeholder="Total Price will be showed here">
                     </div>                     
                     <div class="form-group">
-                      <button type="button" style="margin-top: 8px;" id="btn-add-to-cart" class="btn btn-success" >Add to Cart</button>
-                      <button type="submit" style="margin-top: 8px;" id="btn-save-order" class="btn btn-primary" >Save Order</button>
-                      <button type="reset" style="margin-top: 8px;" class="btn btn-warning">Clear Selection</button>
+                      <button type="submit" style="margin-top: 8px;" id="btn-search-order" class="btn btn-primary" >Search Order</button>
+                      <button type="reset" style="margin-top: 8px;" class="btn btn-danger">Delete Order</button>
                      
                     </div>
                   </div>
@@ -94,7 +62,7 @@
             <div class="col-12 col-lg-6">
               <div class="card">
                 <div class="card-body">
-                  <table id="tbl-place-orders" class="table table-bordered table-hover">
+                  <table id="tbl-search-orders" class="table table-bordered table-hover">
                     <thead>
                     <tr>
                       <th>Code</th>

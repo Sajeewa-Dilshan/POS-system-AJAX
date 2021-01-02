@@ -34,7 +34,7 @@ $("#app .sidebar ul li a").click(function () {
             break;    
         case "Search Orders":
              $("#search-orders").show();
-             alert("jhbhb");
+            
                break;     
     }
 });
