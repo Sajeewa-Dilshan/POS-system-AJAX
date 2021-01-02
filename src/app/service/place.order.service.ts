@@ -10,8 +10,8 @@ import { OrdredItems } from "../model/orderedItems";
 
 let items:Item[]=[];
 let loaded = false;
-let itemDetails:Item;
-let clas:OrdredItems;
+let itemDetails:any;
+
 
 let customersForOrd:Customer[]=[];
 
@@ -102,7 +102,7 @@ export function getCusForOrders():Promise <Array<Customer>>{
  
 }
 
-export function getItemDetails(id:string,code:string,orderedQty:string): Promise<Item>{
+export function getItemDetails(code:string,orderedQty:string): Promise<Item>{
     return new Promise((resolve,reject)=>{
 
         console.log("parsed code ", code );
@@ -112,16 +112,17 @@ export function getItemDetails(id:string,code:string,orderedQty:string): Promise
         http.onreadystatechange=function(){
             if(http.readyState==4){
                let dom= (http.responseText)
+               console.log("hhj",dom);
              itemDetails=(JSON.parse(dom));
-               
+            
                resolve(itemDetails);
-               console.log(http.responseText);
+               
             }
         }
     
-        http.open('GET',`http://localhost:8080/Module3/placeorders?id=${id}&code=${code}&qty=${orderedQty}`,true);
+        http.open('GET',`http://localhost:8080/Module3/placeorders?code=${code}&qty=${orderedQty}`,true);
        
-        http.setRequestHeader("Content-Type","application/json");
+        //http.setRequestHeader("Content-Type","application/json");
 
         http.send();
     
@@ -131,27 +132,27 @@ export function getItemDetails(id:string,code:string,orderedQty:string): Promise
 
 
     
- export   function sendOrderedItems():Promise<void>{
+ export   function sendOrderedItems(id:String,items:Array<String>,qty:Array<String>,total:number):Promise<String>{
+   
+   let itemsForSend =new OrdredItems(items,qty,total);
+    console.log("strgify",JSON.stringify(itemsForSend));
         return new Promise((resolve,reject)=>{
             alert("sfgdfgdf  ");
             let http =new XMLHttpRequest;
 
             http.onreadystatechange=function(){
                 if(http.readyState==4){
-                   
-                     clas =new OrdredItems(["I002","I005","I006"],["1","2","3"]);
-                      console.log("strgify",JSON.stringify(clas));
-                      resolve();
+
+                      resolve(JSON.parse(http.responseText));
                       
                 }
             }
 
-            http.open('POST','http://localhost:8080/Module3/placeorders',true);
+            http.open('POST',`http://localhost:8080/Module3/placeorders?id=${id}&total=${total}`,true);
 
             http.setRequestHeader('Content-Type','application/json');
 
-            //http.send(JSON.stringify(clas))
-            http.send(JSON.stringify(clas))
+            http.send(JSON.stringify(itemsForSend))
 
         });
 

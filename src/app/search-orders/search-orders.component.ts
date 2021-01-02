@@ -3,8 +3,8 @@
  * @since : 11/26/20
 **/
 
-import placeOrders from './place-orders.component.html';
-import style from './place-orders.component.scss';
+import searchOrders from './search-orders.component.html';
+import style from './search-orders.component.scss';
 import 'admin-lte/plugins/datatables/jquery.dataTables.min';
 import 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min';
 import 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min';
@@ -19,7 +19,7 @@ let dataTable3:any=null;
 let items: Array<Item>=[];
 
 
-$("app-place-orders").replaceWith('<div id="place-orders">' + placeOrders + '</div>');
+$("app-search-orders").replaceWith('<div id="search-orders">' + searchOrders + '</div>');
 var html = '<style>' + style + '</style>';
 $("#dashboard").append(html);
 

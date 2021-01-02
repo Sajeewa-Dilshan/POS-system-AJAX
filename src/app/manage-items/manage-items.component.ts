@@ -11,7 +11,7 @@ import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTab
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
 import { getAllItems, saveItem, deleteItem } from '../service/item.service';
 import { Item } from '../model/items';
-import { getAllItem2 } from '../service/item.Service2';
+
 
 let dataTable2:any=null;
 
@@ -35,9 +35,9 @@ $("#tbl-items tbody").on('click','tr .fas',async (event:Event)=>{
 
 async function loadAllItems(){
 
-  //  let items=await getAllItems();
+    let items=await getAllItems();
 
-  let items= await getAllItem2();
+  
   
 
     if(dataTable2){
